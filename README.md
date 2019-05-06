@@ -7,7 +7,8 @@ Copy / fork source somwhere (for example in `/opt/github-hook`).
 Create '/etc/systemd/system/github-hook.service'
 ```
 [Unit]
-Description=Github Hook Server
+Description=Github Webook Server
+After=network.target
 
 [Service]
 ExecStart=/usr/bin/node /opt/github-hook/src/index.js
@@ -49,7 +50,7 @@ repositories:
 
 > Note that this is an example for the "project1" repository.
 
-Go into you project's settings > webhooks
+Go into your project's settings > webhooks
 
 Set `Payload URL` to `http://example.com:8080/github-hook/project1`
 
