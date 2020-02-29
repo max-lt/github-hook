@@ -10,6 +10,8 @@ const bodyParser = require('body-parser');
 const log = require('loglevel');
 const yaml = require('yaml');
 
+log.setLevel('debug');
+
 const { PORT, CONFIG } = process.env;
 
 const config = yaml.parse(fs.readFileSync(CONFIG, 'utf8'));
@@ -76,12 +78,12 @@ function exec(script) {
 }
 
 app.post('/github-hook/:repoId', bodyParser.json({ verify }), (req, res, next) => {
-  const body = req.body;
+  const body = req.body || {};
   const conf = req.conf;
 
   const { repoId } = req.params;
   const commit = body.head_commit;
-  const repository = body.repository;
+  const { repository, refs } = body;
 
   if (req.get('x-github-event') !== 'push') {
     res.send('osef');
@@ -89,6 +91,20 @@ app.post('/github-hook/:repoId', bodyParser.json({ verify }), (req, res, next) =
   }
 
   log.info(`Received hook for repository: "${repository.full_name} (repoId=${repoId})", commit "${commit.message}" done by "${commit.author.username}" (commit id=${commit.id})`);
+
+  // Filter if branch specified
+  if (conf.branch) {
+    const [, branch] = /.*heads\/(.+)$/.exec(refs) || [];
+    if (!branch) {
+      log.warn('Cannot detect branch, the script will continue anyway.');
+    }
+
+    log.debug(`Branch "${branch}" detected`);
+
+    if (branch !== conf.branch) {
+      return;
+    }
+  }
 
   exec(conf.script);
 

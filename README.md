@@ -44,6 +44,10 @@ repositories:
   project2:
     secret: project2secret
     script: /another/path/script.sh --some-argument
+  project3:
+    secret: project1secret
+    script: /some/path/script.sh
+    branch: master # optional
 ```
 
 # Configure your github project: 
