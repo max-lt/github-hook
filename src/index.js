@@ -83,7 +83,7 @@ app.post('/github-hook/:repoId', bodyParser.json({ verify }), (req, res, next) =
 
   const { repoId } = req.params;
   const commit = body.head_commit;
-  const { repository, refs } = body;
+  const { repository, ref } = body;
 
   if (req.get('x-github-event') !== 'push') {
     res.send('osef');
@@ -94,12 +94,12 @@ app.post('/github-hook/:repoId', bodyParser.json({ verify }), (req, res, next) =
 
   // Filter if branch specified
   if (conf.branch) {
-    const [, branch] = /.*heads\/(.+)$/.exec(refs) || [];
+    const [, branch] = /.*heads\/(.+)$/.exec(ref) || [];
     if (!branch) {
       log.warn('Cannot detect branch, the script will continue anyway.');
     }
 
-    log.debug(`Branch "${branch}" detected`);
+    log.debug(`Branch "${branch}" detected.`);
 
     if (branch !== conf.branch) {
       return;
