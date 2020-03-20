@@ -99,9 +99,9 @@ app.post('/github-hook/:repoId', bodyParser.json({ verify }), (req, res, next) =
       log.warn('Cannot detect branch, the script will continue anyway.');
     }
 
-    log.debug(`Branch "${branch}" detected.`);
-
     if (branch !== conf.branch) {
+      log.debug(`Ignoring branch "${branch}" expeted branch "${conf.branch}".`);
+      res.send('osef');
       return;
     }
   }
