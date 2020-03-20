@@ -100,7 +100,7 @@ app.post('/github-hook/:repoId', bodyParser.json({ verify }), (req, res, next) =
     }
 
     if (branch !== conf.branch) {
-      log.debug(`Ignoring branch "${branch}" expeted branch "${conf.branch}".`);
+      log.debug(`Ignoring branch "${branch}" expected branch "${conf.branch}".`);
       res.send('osef');
       return;
     }
