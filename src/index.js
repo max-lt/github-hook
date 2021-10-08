@@ -77,20 +77,23 @@ function exec(script) {
   });
 }
 
+/*
+ * Note that the event body may vary depending on the event source (github builtin hooks / github actions hooks)
+ * Github builtin hooks: https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#push
+ * Github actions hooks: { ref, event, repository, commit, head, workflow, requestID } (strings only)
+ */
 app.post('/github-hook/:repoId', bodyParser.json({ verify }), (req, res, next) => {
   const body = req.body || {};
   const conf = req.conf;
 
-  const { repoId } = req.params;
-  const commit = body.head_commit;
-  const { repository, ref } = body;
+  log.debug('Received hook for', JSON.stringify(body));
+
+  const { ref } = body;
 
   if (req.get('x-github-event') !== 'push') {
     res.send('osef');
     return;
   }
-
-  log.info(`Received hook for repository: "${repository.full_name} (repoId=${repoId})", commit "${commit.message}" done by "${commit.author.username}" (commit id=${commit.id})`);
 
   // Filter if branch specified
   if (conf.branch) {
@@ -116,6 +119,7 @@ app.get('/github-hook/version', (req, res, next) => res.send(version));
 app.get('*', (req, res, next) => { throw new NotFound });
 
 app.use((error, req, res, next) => {
+  log.error('Error', error);
   const code = error.status || 500;
   res.status(code).json({ code, error: error.message });
 });
