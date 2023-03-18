@@ -2,12 +2,12 @@
 
 ## Install
 
-Copy / fork source somwhere (for example in `/opt/github-hook`).
+Copy / fork source somewhere (for example in `/opt/github-hook`).
 
 Create '/etc/systemd/system/github-hook.service'
 ```
 [Unit]
-Description=Github Webook Server
+Description=Github Webhook Server
 After=network.target
 
 [Service]
