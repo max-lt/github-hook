@@ -1,5 +1,7 @@
 # Github hook server
 
+This repository will be archived as it has been rewritten is rust! [Check it out](https://github.com/max-lt/github-hook-rs) 
+
 ## Install
 
 Copy / fork source somewhere (for example in `/opt/github-hook`).
